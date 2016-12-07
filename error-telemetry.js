@@ -3548,7 +3548,8 @@ window.ErrorTelemetry = (function () {
                             if (getRequest.readyState == 4 && getRequest.status == 200) {
                                 addSourceMapData(data, getRequest.responseText, jsFile);
                                 self.sendTelemetry(data);
-                            } else if (getRequest.readyState == 4 && getRequest.status == 404) {
+                            } else if (getRequest.readyState == 4 && getRequest.status == 404 ||
+    				       getRequest.readyState == 4 && getRequest.status == 0) {
                                 // If we get an unexpected state, just try and send the data.
                                 data.stack = self.getStackTrace(data.e, null);
                                 data.e = undefined;
