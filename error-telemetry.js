@@ -3535,44 +3535,6 @@ window.ErrorTelemetry = (function () {
             try {
                 // If there is no js file, there should be no resulting map. Also,
                 // if there is no source mapper, no point in getting the mapping information.
-                if (jsFileUrl !== null && sourceMap) {
-                    // if it isnt in the cache, we need to go grab it.
-                    if (sourceMapCache[jsFile] === undefined || sourceMapCache[jsFile] === null) {
-                        // Create a cross origin request
-                        getRequest = self.createCORSRequest("GET", jsFileUrl + ".map");
-
-                        // Once the request finishes, handle parsing the data.
-                        getRequest.onreadystatechange = function () {
-
-                            // if it is successful, parse and send telemetry data.
-                            if (getRequest.readyState == 4 && getRequest.status == 200) {
-                                addSourceMapData(data, getRequest.responseText, jsFile);
-                                self.sendTelemetry(data);
-                            } else if (getRequest.readyState == 4 && getRequest.status == 404 ||
-    				       getRequest.readyState == 4 && getRequest.status == 0) {
-                                // If we get an unexpected state, just try and send the data.
-                                data.stack = self.getStackTrace(data.e, null);
-                                data.e = undefined;
-                                self.sendTelemetry(data);
-                            }
-                        };
-
-                        // We try to get the sourcemap through a request, otherwise just send the "raw" data to be logged.
-                        if (!getRequest) {
-                            throw new Error('CORS not supported');
-                        } else {
-                            getRequest.setRequestHeader("Content-Type", "application/json");
-			    getRequest.send();
-                        }
-                    } else {
-                        // Enhance the data quality with source map info
-                        addSourceMapData(data, sourceMapCache[jsFile], jsFile);
-                        data.fileName = data.fileName + ".src";
-
-                        data.e = undefined;
-                        self.sendTelemetry(data);
-                    }
-                } else {
                     try {
                         // cannot enhance the data, so just send what we have
                         data.stack = self.getStackTrace(data.e, null);
@@ -3580,7 +3542,6 @@ window.ErrorTelemetry = (function () {
                         self.sendTelemetry(data);
                     } catch (ex3) {
                     }
-                }
             } catch (ex) {
                 // exception while trying to enhance the data, just send the data
                 try {
