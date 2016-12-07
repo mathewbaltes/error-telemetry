@@ -3561,9 +3561,7 @@ window.ErrorTelemetry = (function () {
                             throw new Error('CORS not supported');
                         } else {
                             getRequest.setRequestHeader("Content-Type", "application/json");
-                            try {
-				getRequest.send();
-			    } catch (e) {}
+			    getRequest.send();
                         }
                     } else {
                         // Enhance the data quality with source map info
